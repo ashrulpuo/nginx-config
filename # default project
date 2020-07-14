@@ -1,0 +1,58 @@
+# default project
+# you can use this example and put in your projects folder under the project name. The file name MUST use nginx.conf
+# eg: projects/example/nginx.conf
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name jibil.com.my;
+    return 302 https://$server_name$request_uri;
+}
+
+server {
+        # SSL configuration
+
+        listen 443 ssl http2;
+        listen [::]:443 ssl http2;
+        ssl        on;
+        ssl_certificate         /etc/ssl/certs/cert.pem;
+        ssl_certificate_key     /etc/ssl/private/key.pem;
+
+        charset utf-8;
+        client_max_body_size 128M;
+    
+        server_name jibil.com.my;
+        root        /var/www/projects/advertisement/public;
+        index       index.php;
+    
+        access_log off;
+        error_log   /var/www/projects/logs/advertisement-error.log;
+    
+        location / {
+            # Redirect everything that isn't a real file to index.php
+            try_files $uri $uri/ /index.php$is_args$args;
+        }
+    
+        # uncomment to avoid processing of calls to non-existing static files by Yii
+        #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+        #    try_files $uri =404;
+        #}
+        #error_page 404 /404.html;
+
+        # deny accessing php files for the /assets directory
+        location ~ ^/assets/.*\.php$ {
+            deny all;
+        }
+
+        location ~ \.php$ {
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_pass php7.fpm:9000;
+            try_files $uri =404;
+        }
+    
+        location ~* /\. {
+            deny all;
+        }
+}
