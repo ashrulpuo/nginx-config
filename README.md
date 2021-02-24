@@ -1,9 +1,9 @@
 # full nginx config with cloudflare ssl (full)
 
-1 - generate cert.pem and key.pem in cloudflare (origin server tab)
-2 - place the key to /docker-webstack/etc/ssl/certs && private
-3 - use this nginx config
-4 - restart web server
+* generate cert.pem and key.pem in cloudflare (origin server tab)
+* place the key to /docker-webstack/etc/ssl/certs && private
+* use this nginx config
+* restart web server
 
 debug
 
